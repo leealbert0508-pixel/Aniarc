@@ -33,14 +33,14 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.key == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     current = (current + 1)%len(frames)
-            elif event.key == pygame.K_LEFT:
-                current = (current - 1) % len(frames)
-            elif event.key == pygame.K_SPACE:
-                # change the result(true and false)
-                playing = not playing
+                elif event.key == pygame.K_LEFT:
+                    current = (current - 1) % len(frames)
+                elif event.key == pygame.K_SPACE:
+                    # change the result(true and false)
+                    playing = not playing
 
         # game logic
         if playing:
