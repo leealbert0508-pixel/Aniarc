@@ -19,7 +19,7 @@ def main():
 
     #創建螢幕
     screen = pygame.display.set_mode(frames[0].get_size())
-    pygame.dosplay.set_caption("Aniarc")
+    pygame.display.set_caption("Aniarc")
     clock = pygame.time.Clock()
 
     #起始frame
