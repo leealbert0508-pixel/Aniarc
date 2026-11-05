@@ -46,7 +46,7 @@ def main():
         if playing:
             current = (current + 1) % len(frames)
         screen.blit(frames[current], (0, 0))
-        pygame.display.filp()
+        pygame.display.flip()
 
         clock.tick(24)
 
