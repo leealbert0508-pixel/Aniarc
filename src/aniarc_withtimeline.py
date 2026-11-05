@@ -1,0 +1,137 @@
+import pygame
+import os
+import glob
+
+
+def load_seq(folder):
+    img_seq = sorted(glob.glob(os.path.join(folder, "*.png")))
+    frames = []
+    for img in img_seq:
+        frames.append(pygame.image.load(img))
+    return frames
+
+def get_max_screen_size():
+    info = pygame.display.Info()
+    screen_w = info.current_w
+    screen_h = info.current_h
+    width = int(screen_w*0.7)
+    height = int(screen_h*0.7)
+    return (width, height)
+
+def main():
+    
+
+    #找到資料夾(測試
+    pygame.init()
+    base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    folder = os.path.join(base, "samples", "run_cycle")
+    frames = load_seq(folder)
+
+    #螢幕大小*0.7 = 軟件視窗大小
+    max_w, max_h = get_max_screen_size()
+    aspect = 16/9
+
+    
+    if max_w / max_h > aspect:
+        win_h = max_h
+        win_w = int(win_h * aspect)
+    else:
+        win_w = max_w
+        win_h = int(win_w / aspect)
+
+    #圖片大小
+    img_w, img_h = frames[0].get_size()
+
+    #圖片大小/視窗大小 = 相對比例(用於縮放)
+    scale = min(win_w / img_w, win_h / img_h, 1.0)
+
+    # 計算 new size of img
+    new_size = (int(img_w * scale), int(img_h * scale))
+    
+    # 創建視窗(按照機算出的視窗大小)
+    screen = pygame.display.set_mode((win_w, win_h))
+
+    # 設定視窗標題
+    pygame.display.set_caption("Aniarc")
+    # 創建時鐘
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont("consolas", 24)
+
+    # 起始frame
+    current = 0
+    # 設置自動撥放(默認關閉)
+    playing = False
+
+    # Game Loop
+    running = True
+    while running:
+
+        # event loop
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    current = (current + 1)%len(frames)
+                elif event.key == pygame.K_LEFT:
+                    current = (current - 1)%len(frames)
+                elif event.key == pygame.K_SPACE:
+                    # change the result(true and false)
+                    playing = not playing
+                elif event.key == pygame.K_ESCAPE:
+                    running = False
+
+    # game logic
+        if playing:
+            current = (current + 1) % len(frames)
+        
+        # 獲取 Resize img (scaled = resized img)
+        scaled = pygame.transform.smoothscale(frames[current], new_size)
+
+        # 獲取置中座標
+        x = (win_w - new_size[0]) // 2
+        y = (win_h - new_size[1]) // 2
+
+        # 將視窗清成被景色
+        screen.fill((30, 30, 30))
+        
+        # 將圖片寫入視窗
+        screen.blit(scaled, (x, y))
+
+
+        # 寫入現在的frame
+        current_frame = f"{current + 1} / {len(frames)}"
+        text = font.render(current_frame, True, (255, 255, 255))
+        screen.blit(text, (15, 20))
+
+        # 時間軸位置/參數
+        bar_spaceing = 40
+        bar_height = win_h - (win_h*0.1)
+        bar_left = bar_spaceing
+        bar_right = win_w - bar_spaceing
+
+        # 時間軸本體(底線)
+        pygame.draw.line(screen, (120, 120, 120), (bar_left, bar_height), (bar_right, bar_height), 4)
+
+        # 跟新時間軸的方法
+        # 第1張以外的情況
+        if len(frames) > 1:
+            t = current / (len(frames) - 1)
+        # 第1張的情況下
+        else:
+            t = 0
+        playhead_x = int(bar_left + t * (bar_right - bar_left))
+        
+        # 播放頭（小垂直線）
+        pygame.draw.line(screen, (255, 80, 80), (playhead_x, bar_height - 10), (playhead_x, bar_height + 10), 3)
+
+        # 反轉/顯示圖片
+        pygame.display.flip()
+
+        # 限制每一幀應為1/24秒，即24pfs
+        clock.tick(24)
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
