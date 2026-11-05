@@ -10,6 +10,14 @@ def load_seq(folder):
         frames.append(pygame.image.load(img))
     return frames
 
+def get_user_screen_size():
+    info = pygame.display.Info()
+    screen_w = info.current_w
+    screen_h = info.current_h
+    width = screen_w*0.7
+    height = screen_h*0.7
+    return (height, width)
+
 def main():
     #找到資料夾(測試
     pygame.init()
@@ -18,7 +26,8 @@ def main():
     frames = load_seq(folder)
 
     #創建螢幕
-    screen = pygame.display.set_mode(frames[0].get_size())
+    WINDOW_SIZE = get_user_screen_size()
+    screen = pygame.display.set_mode(WINDOW_SIZE)
     pygame.display.set_caption("Aniarc")
     clock = pygame.time.Clock()
 
@@ -41,6 +50,8 @@ def main():
                 elif event.key == pygame.K_SPACE:
                     # change the result(true and false)
                     playing = not playing
+                elif event.key == pygame.K_ESCAPE:
+                    running = False
 
         # game logic
         if playing:
