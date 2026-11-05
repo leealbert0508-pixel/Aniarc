@@ -1,14 +1,14 @@
 # Aniarc
 A tool that help animator to observe and note the arcs in the animation.
 
-## Repo link
+## Repository
 https://github.com/leealbert0508-pixel/Aniarc
 
 ## Description
-This tool will accept image sequence, and allow user to add dot and annotation on the arc, and expert as mp4 or gif.
+This tool will accept image sequence, and allow user to add dot and annotation on the arc, and export as mp4 or gif.
 
 
-## Feature
+## Features
 Can play image sequence, can move frame by frame.
 It has a GUI surface.
 
@@ -76,3 +76,4 @@ Minimal Viable Outcome:
     - Create function for annotation.
     - Clean up the code.
     - Record Video
+    - Export Mp4 File
