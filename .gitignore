@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Export output
+output/
+
+# Test sequences (do not push copyrighted samples)
+samples/
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
