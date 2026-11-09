@@ -36,6 +36,17 @@ About annotation, Aniarc allow user to add their note inside the frame.
 
 ## Challenges
 Use knowladge and skill learn from the course.
+- pygame
+    - game loop...
+    - flip surface
+    - trace time(dt...)
+    - draw on surface
+- image
+    - read path by using os
+    - read image
+    - read image sequence
+    - save as mp4 or gif
+- etc...
 
 
 ## Outcomes
