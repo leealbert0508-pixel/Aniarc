@@ -66,7 +66,6 @@ def main():
     max_w, max_h = get_max_screen_size()
     aspect = 16/9
 
-    
     if max_w / max_h > aspect:
         win_h = max_h
         win_w = int(win_h * aspect)
@@ -76,12 +75,20 @@ def main():
 
     #圖片大小
     img_w, img_h = frames[0].get_size()
+    
+    #工具列
+    tool_bar_h = 50
 
     #圖片大小/視窗大小 = 相對比例(用於縮放)
-    scale = min(win_w / img_w, win_h / img_h, 1.0)
+    scale = min(win_w / img_w, (win_h - tool_bar_h) / img_h, 1.0)
 
     # 計算 new size of img
     new_size = (int(img_w * scale), int(img_h * scale))
+
+    # Edit mode(to add dot)
+    edit_mode = False
+    # botton of edit mode
+    edit_btn = pygame.Rect(8, 9, 70, 32)
     
     # 創建視窗(按照機算出的視窗大小)
     screen = pygame.display.set_mode((win_w, win_h))
@@ -115,7 +122,8 @@ def main():
                     playing = not playing
                 elif event.key == pygame.K_ESCAPE:
                     running = False
-
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_btn.collidepoint(event.pos):
+                edit_mode = not edit_mode
     # game logic
         if playing:
             current = (current + 1) % len(frames)
@@ -125,18 +133,27 @@ def main():
 
         # 獲取置中座標
         x = (win_w - new_size[0]) // 2
-        y = (win_h - new_size[1]) // 2
+        y = tool_bar_h + (win_h - tool_bar_h - new_size[1]) // 2
 
         # 將視窗清成被景色
         screen.fill((30, 30, 30))
         
         # 將圖片寫入視窗
         screen.blit(scaled, (x, y))
+        # 畫工具列
+        pygame.draw.rect(screen, (45, 45, 45), (0, 0, win_w, tool_bar_h))
+        if edit_mode == True:
+            btn_color = (60, 120, 220)
+        else:
+            btn_color = (80, 80, 80)
+        pygame.draw.rect(screen, btn_color, edit_btn)
+        btn_text = font.render("Edit", True, (255, 255, 255))
+        screen.blit(btn_text, (edit_btn.x + 8, edit_btn.y + 4))
 
         # 寫入現在的frame
         current_frame = f"{current + 1} / {len(frames)}"
         text = font.render(current_frame, True, (255, 255, 255))
-        screen.blit(text, (15, 20))
+        screen.blit(text, (15, 60))
 
         # 反轉/顯示圖片
         pygame.display.flip()
