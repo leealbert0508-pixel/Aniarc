@@ -16,7 +16,8 @@ def load_video(file_path):
     frames = []
     
     for f in clip.iter_frames():
-        w, h = f.shape[:2]
+        h, w = f.shape[:2]
+        # convert data to img(frame)
         frames.append(pygame.image.frombuffer(f.tobytes(), (w, h), "RGB"))
     clip.close()
     return frames
