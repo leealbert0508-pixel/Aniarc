@@ -6,9 +6,13 @@ import tkinter as tk
 from tkinter import filedialog
 
 def input_file():
-    
-    
-    pass
+    # create file input window.
+    input_window = tk.Tk()
+    input_window.withdraw()
+
+    filedialog.askopenfilename(
+        title="Open image sequence or video file(gif/mp4)",
+        filetypes=[("Media", "*.png *.gif *.mp4")])
 
 def load_seq(folder):
     img_seq = sorted(glob.glob(os.path.join(folder, "*.png")))
@@ -38,22 +42,20 @@ def get_max_screen_size():
 
 def main():
     
-
-    #找到資料夾(測試
-    pygame.init()
-
-    # find the root folder
-    base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    #path = folder for seq/file path for gif or mp4
+    path = input_file()
     
-    # path = folder for seq/file path for gif or mp4
-    path = os.path.join(base, "samples", "run_cycle.mp4")
+    #初始化pygame
+    pygame.init()
+    
     # get the file type
     ext = os.path.splitext(path)[1].lower()
     
     if ext in (".gif", ".mp4"):
         frames = load_video(path)
     else:
-        frames = load_seq(path)
+        # get only folder name of the input image
+        frames = load_seq(os.path.dirname(path))
 
     #螢幕大小*0.7 = 軟件視窗大小
     max_w, max_h = get_max_screen_size()
