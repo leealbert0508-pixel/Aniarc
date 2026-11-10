@@ -10,9 +10,12 @@ def input_file():
     input_window = tk.Tk()
     input_window.withdraw()
 
-    filedialog.askopenfilename(
+    file_path = filedialog.askopenfilename(
         title="Open image sequence or video file(gif/mp4)",
         filetypes=[("Media", "*.png *.gif *.mp4")])
+    input_window.destroy()
+
+    return file_path
 
 def load_seq(folder):
     img_seq = sorted(glob.glob(os.path.join(folder, "*.png")))
@@ -44,6 +47,8 @@ def main():
     
     #path = folder for seq/file path for gif or mp4
     path = input_file()
+    if not path:
+        return
     
     #初始化pygame
     pygame.init()
