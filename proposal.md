@@ -46,6 +46,7 @@ Use knowladge and skill learn from the course.
     - read image
     - read image sequence
     - save as mp4 or gif
+- Can read gif or mp4 files.
 - etc...
 
 

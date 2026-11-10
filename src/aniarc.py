@@ -1,6 +1,7 @@
 import pygame
 import os
 import glob
+from moviepy.editor import VideoFileClip
 
 
 def load_seq(folder):
@@ -8,6 +9,16 @@ def load_seq(folder):
     frames = []
     for img in img_seq:
         frames.append(pygame.image.load(img))
+    return frames
+
+def load_video(file_path):
+    clip = VideoFileClip(file_path)
+    frames = []
+    
+    for f in clip.iter_frames():
+        w, h = f.shape[:2]
+        frames.append(pygame.image.frombuffer(f.tobytes(), (w, h), "RGB"))
+    clip.close()
     return frames
 
 def get_max_screen_size():
@@ -97,7 +108,6 @@ def main():
         
         # 將圖片寫入視窗
         screen.blit(scaled, (x, y))
-
 
         # 寫入現在的frame
         current_frame = f"{current + 1} / {len(frames)}"
