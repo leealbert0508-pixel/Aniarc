@@ -181,10 +181,8 @@ def main():
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3 and edit_mode:
             # button 3 == right mouse
                 mx, my = event.pos
-                for i, (ox, oy) in enumerate(dots.get(current, [])):
-                    # get screen size
-                    sx = x + ox * scale
-                    sy = y + oy * scale
+                for i, d in enumerate(dots.get(current, [])):
+                    d.hit(mx, my, x, y, scale, dot_r)
 
                     if abs(mx-sx) <= 6 and abs(my-sy) <= 6:
                         # stored history
@@ -206,13 +204,8 @@ def main():
         # 將圖片寫入視窗
         screen.blit(scaled, (x, y))
 
-        for ox, oy in dots.get(current, []):
-        # image size to screen size
-            sx = x + ox * scale
-            sy = y + oy * scale
-        
-        # draw dot
-            pygame.draw.circle(screen, (255, 0, 0), (int(sx), int(sy)), 5)
+        for d in dots.get(current, []):
+            d.draw(screen, x, y, scale, dot_r)
 
         # 畫工具列
         pygame.draw.rect(screen, (45, 45, 45), (0, 0, win_w, tool_bar_h))
