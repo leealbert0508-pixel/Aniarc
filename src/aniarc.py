@@ -17,6 +17,23 @@ def input_file():
 
     return file_path
 
+class Dot:
+    def __init__(self, ox, oy):
+        # Get original position
+        self.ox = ox
+        self.oy = oy
+
+    def to_screen(self, x, y, scale):
+         return x + self.ox * scale, y + self.oy * scale
+    
+    def draw(self, screen, x, y, scale, r):
+        sx, sy = self.to_screen(x, y, scale)
+        pygame.draw.circle(screen, (255, 0, 0), (int(sx), int(sy)), r)
+    
+    def hit(self, mx, my, x, y, scale, r):
+        sx, sy = self.to_screen(x, y, scale)
+        return abs(mx - sx) <= r + 1 and abs(my - sy) <= r + 1
+
 def load_seq(folder):
     img_seq = sorted(glob.glob(os.path.join(folder, "*.png")))
     frames = []
@@ -93,8 +110,11 @@ def main():
 
     # Edit mode(to add dot)
     edit_mode = False
-    # botton of edit mode
+    # 繪製 botton of edit mode
     edit_btn = pygame.Rect(8, 9, 70, 32)
+
+    #繪製調整dot大小的條
+    
     
     # 創建視窗(按照機算出的視窗大小)
     screen = pygame.display.set_mode((win_w, win_h))
@@ -152,7 +172,7 @@ def main():
                 ox = (mx - x) / scale
                 oy = (my - y) / scale
 
-                dots.setdefault(current, []).append((ox, oy))
+                dots.setdefault(current, []).append(Dot(ox, oy))
 
                 # stored dots history
                 history.append(('add', current))
