@@ -167,11 +167,16 @@ def main():
                 edit_mode = not edit_mode
 
             #change dot size
-            elif pygame.MOUSEBUTTONDOWN and event.button == 1 and minus_btn:
-                dot_r = dot_r - 1
-            elif pygame.MOUSEBUTTONDOWN and event.button == 1 and plus_btn:
-                dot_r = dot_r + 1
-
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and minus_btn.collidepoint(event.pos):
+                if dot_r >= 1:
+                    dot_r = dot_r - 1
+                else:
+                    pass
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and plus_btn.collidepoint(event.pos):
+                if dot_r <= 9:
+                    dot_r = dot_r + 1
+                else:
+                    pass
             # add dots
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_mode == True and pygame.Rect(x, y, new_size[0], new_size[1]).collidepoint(event.pos):
                 mx, my = event.pos
@@ -233,10 +238,11 @@ def main():
         screen.blit(minus_text, (minus_btn.x + 10, minus_btn.y + 4))
         pygame.draw.rect(screen, (80, 80, 80), plus_btn)
         plus_text = font.render("+", True, (255, 255, 255))
-        screen.blit(minus_text, (plus_btn.x + 10, plus_btn.y + 4))
+        screen.blit(plus_text, (plus_btn.x + 10, plus_btn.y + 4))
 
         #Print current dot size
-        font.render(str(dot_r), ((plus_btn.y - minus_btn.y)//2, 13))
+        current_dots = font.render(str(dot_r), True, (255, 255, 255))
+        screen.blit(current_dots, (((plus_btn.x + minus_btn.x)//2) + 10, 15))
 
         # 寫入現在的frame
         current_frame = f"{current + 1} / {len(frames)}"
