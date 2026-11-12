@@ -133,7 +133,7 @@ def main():
                     running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_btn.collidepoint(event.pos):
                 edit_mode = not edit_mode
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_mode == True and event.pos[1] > tool_bar_h and pygame.Rect(x, y, new_size[0], new_size[1]).collidepoint(event.pos):
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_mode == True and pygame.Rect(x, y, new_size[0], new_size[1]).collidepoint(event.pos):
                 mx, my = event.pos
 
             # screen size to image size
@@ -141,6 +141,16 @@ def main():
                 oy = (my - y) / scale
 
                 dots.setdefault(current, []).append((ox, oy))
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3 and edit_mode:
+            # button 3 == right mouse
+                mx, my = event.pos
+                for i, (ox, oy) in enumerate(dots.get(current, [])):
+                    # get screen size
+                    sx = x + ox * scale
+                    sy = y + oy * scale
+                    if abs(mx-sx) <= 6 and abs(my-sy) <= 6:
+                        dots[current].pop(i)
+                        break
 
             
 
