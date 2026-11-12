@@ -52,6 +52,8 @@ def main():
     
     #初始化pygame
     pygame.init()
+    # repeat
+    pygame.key.set_repeat(300, 40)
     
     # get the file type
     ext = os.path.splitext(path)[1].lower()
@@ -85,6 +87,10 @@ def main():
     # 計算 new size of img
     new_size = (int(img_w * scale), int(img_h * scale))
 
+    # 獲取置中座標
+    x = (win_w - new_size[0]) // 2
+    y = tool_bar_h + (win_h - tool_bar_h - new_size[1]) // 2
+
     # Edit mode(to add dot)
     edit_mode = False
     # botton of edit mode
@@ -103,6 +109,9 @@ def main():
     current = 0
     # 設置自動撥放(默認關閉)
     playing = False
+
+    # stored the dot
+    dots = {}
 
     # Game Loop
     running = True
@@ -130,10 +139,6 @@ def main():
         
         # 獲取 Resize img (scaled = resized img)
         scaled = pygame.transform.smoothscale(frames[current], new_size)
-
-        # 獲取置中座標
-        x = (win_w - new_size[0]) // 2
-        y = tool_bar_h + (win_h - tool_bar_h - new_size[1]) // 2
 
         # 將視窗清成被景色
         screen.fill((30, 30, 30))
