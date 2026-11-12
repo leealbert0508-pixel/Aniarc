@@ -113,6 +113,9 @@ def main():
     # stored the dot
     dots = {}
 
+    # History
+    history = []
+
     # Game Loop
     running = True
     while running:
@@ -131,8 +134,17 @@ def main():
                     playing = not playing
                 elif event.key == pygame.K_ESCAPE:
                     running = False
+                elif event.key == pygame.K_z and event.mod & pygame.KMOD_CTRL:
+                    action = history.pop()
+                    if action[0] == 'add':
+                        dots[action[1]].pop()
+                    elif action[0] == "del":
+                        dots[action[1]].insert(action[2], action[3])
+
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_btn.collidepoint(event.pos):
                 edit_mode = not edit_mode
+
+            # add dots
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_mode == True and pygame.Rect(x, y, new_size[0], new_size[1]).collidepoint(event.pos):
                 mx, my = event.pos
 
@@ -141,6 +153,11 @@ def main():
                 oy = (my - y) / scale
 
                 dots.setdefault(current, []).append((ox, oy))
+
+                # stored dots history
+                history.append(('add', current))
+                
+
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3 and edit_mode:
             # button 3 == right mouse
                 mx, my = event.pos
@@ -148,10 +165,12 @@ def main():
                     # get screen size
                     sx = x + ox * scale
                     sy = y + oy * scale
+
                     if abs(mx-sx) <= 6 and abs(my-sy) <= 6:
+                        # stored history
+                        history.append(('del', current, i, (ox, oy)))
                         dots[current].pop(i)
                         break
-
             
 
     # game logic
