@@ -132,6 +132,7 @@ def main():
 
     # stored the dot
     dots = {}
+    dot_r = 5
 
     # History
     history = []
@@ -182,11 +183,10 @@ def main():
             # button 3 == right mouse
                 mx, my = event.pos
                 for i, d in enumerate(dots.get(current, [])):
-                    d.hit(mx, my, x, y, scale, dot_r)
 
-                    if abs(mx-sx) <= 6 and abs(my-sy) <= 6:
+                    if d.hit(mx, my, x, y, scale, dot_r):
                         # stored history
-                        history.append(('del', current, i, (ox, oy)))
+                        history.append(('del', current, i, d))
                         dots[current].pop(i)
                         break
             
