@@ -168,7 +168,7 @@ def main():
 
             #change dot size
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and minus_btn.collidepoint(event.pos):
-                if dot_r >= 1:
+                if dot_r > 1:
                     dot_r = dot_r - 1
                 else:
                     pass
@@ -209,7 +209,8 @@ def main():
     # game logic
         if playing:
             current = (current + 1) % len(frames)
-        
+        #print(current)
+
         # 獲取 Resize img (scaled = resized img)
         scaled = pygame.transform.smoothscale(frames[current], new_size)
 
@@ -236,16 +237,42 @@ def main():
         pygame.draw.rect(screen, (80, 80, 80), minus_btn)
         minus_text = font.render("-", True, (255, 255, 255))
         screen.blit(minus_text, (minus_btn.x + 10, minus_btn.y + 4))
+        
         pygame.draw.rect(screen, (80, 80, 80), plus_btn)
         plus_text = font.render("+", True, (255, 255, 255))
         screen.blit(plus_text, (plus_btn.x + 10, plus_btn.y + 4))
 
         #Print current dot size
-        current_dots = font.render(str(dot_r), True, (255, 255, 255))
-        screen.blit(current_dots, (((plus_btn.x + minus_btn.x)//2) + 10, 15))
+        if dot_r != 10:
+            current_dots = font.render(str(f"0{dot_r}"), True, (255, 255, 255))
+            screen.blit(current_dots, (((plus_btn.x + minus_btn.x)//2) + 4, 15))
+        else:
+            current_dots = font.render(str(dot_r), True, (255, 255, 255))
+            screen.blit(current_dots, (((plus_btn.x + minus_btn.x)//2) + 4, 15))
+        
+    # 寫入現在的frame
+        # 二位數的情況
+        if len(frames) > 9 and len(frames) < 100:
+            if current + 1 < 10:
+                #print("幀數是個位數")
+                current_frame = f"0{current + 1} / {len(frames)}"
+            elif current + 1 > 9:
+                #print("幀數是二位數")
+                current_frame = f"{current + 1} / {len(frames)}"
 
-        # 寫入現在的frame
-        current_frame = f"{current + 1} / {len(frames)}"
+        #三位數的情況
+        elif len(frames) > 99 and len(frames) < 1000:
+            if current + 1 < 10:
+                current_frame = f"00{current + 1} / {len(frames)}"
+            elif current + 1 > 9 and current + 1< 100:
+                current_frame = f"0{current + 1} / {len(frames)}"
+            elif current + 1 > 99:
+                current_frame = f"{current + 1} / {len(frames)}"
+        
+        # 一位數的情況
+        else:
+            current_frame = f"0{current + 1} / {len(frames)}"
+            
         text = font.render(current_frame, True, (255, 255, 255))
         screen.blit(text, (15, 60))
         
