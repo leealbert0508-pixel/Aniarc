@@ -243,36 +243,12 @@ def main():
         screen.blit(plus_text, (plus_btn.x + 10, plus_btn.y + 4))
 
         #Print current dot size
-        if dot_r != 10:
-            current_dots = font.render(str(f"0{dot_r}"), True, (255, 255, 255))
-            screen.blit(current_dots, (((plus_btn.x + minus_btn.x)//2) + 4, 15))
-        else:
-            current_dots = font.render(str(dot_r), True, (255, 255, 255))
-            screen.blit(current_dots, (((plus_btn.x + minus_btn.x)//2) + 4, 15))
+        current_dots = font.render(f"{dot_r:02d}", True, (255, 255, 255))
+        screen.blit(current_dots, (((plus_btn.x + minus_btn.x)//2) + 4, 15))
         
-    # 寫入現在的frame
-        # 二位數的情況
-        if len(frames) > 9 and len(frames) < 100:
-            if current + 1 < 10:
-                #print("幀數是個位數")
-                current_frame = f"0{current + 1} / {len(frames)}"
-            elif current + 1 > 9:
-                #print("幀數是二位數")
-                current_frame = f"{current + 1} / {len(frames)}"
-
-        #三位數的情況
-        elif len(frames) > 99 and len(frames) < 1000:
-            if current + 1 < 10:
-                current_frame = f"00{current + 1} / {len(frames)}"
-            elif current + 1 > 9 and current + 1< 100:
-                current_frame = f"0{current + 1} / {len(frames)}"
-            elif current + 1 > 99:
-                current_frame = f"{current + 1} / {len(frames)}"
-        
-        # 一位數的情況
-        else:
-            current_frame = f"0{current + 1} / {len(frames)}"
-            
+        # 寫入現在的frame
+        width = len(str(len(frames)))
+        current_frame = f"{current + 1:0{width}d} / {len(frames)}"
         text = font.render(current_frame, True, (255, 255, 255))
         screen.blit(text, (15, 60))
         
