@@ -133,6 +133,17 @@ def main():
                     running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_btn.collidepoint(event.pos):
                 edit_mode = not edit_mode
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_mode == True and event.pos[1] > tool_bar_h and pygame.Rect(x, y, new_size[0], new_size[1]).collidepoint(event.pos):
+                mx, my = event.pos
+
+            # screen size to image size
+                ox = (mx - x) / scale
+                oy = (my - y) / scale
+
+                dots.setdefault(current, []).append((ox, oy))
+
+            
+
     # game logic
         if playing:
             current = (current + 1) % len(frames)
@@ -145,6 +156,15 @@ def main():
         
         # 將圖片寫入視窗
         screen.blit(scaled, (x, y))
+
+        for ox, oy in dots.get(current, []):
+        # image size to screen size
+            sx = x + ox * scale
+            sy = y + oy * scale
+        
+        # draw dot
+            pygame.draw.circle(screen, (255, 0, 0), (int(sx), int(sy)), 5)
+
         # 畫工具列
         pygame.draw.rect(screen, (45, 45, 45), (0, 0, win_w, tool_bar_h))
         if edit_mode == True:
@@ -159,7 +179,7 @@ def main():
         current_frame = f"{current + 1} / {len(frames)}"
         text = font.render(current_frame, True, (255, 255, 255))
         screen.blit(text, (15, 60))
-
+        
         # 反轉/顯示圖片
         pygame.display.flip()
 
