@@ -114,7 +114,8 @@ def main():
     edit_btn = pygame.Rect(8, 9, 70, 32)
 
     #繪製調整dot大小的條
-    
+    minus_btn = pygame.Rect(90, 9, 32, 32)
+    plus_btn = pygame.Rect(170, 9, 32, 32)
     
     # 創建視窗(按照機算出的視窗大小)
     screen = pygame.display.set_mode((win_w, win_h))
@@ -165,9 +166,18 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_btn.collidepoint(event.pos):
                 edit_mode = not edit_mode
 
+            #change dot size
+            elif pygame.MOUSEBUTTONDOWN and event.button == 1 and minus_btn:
+                dot_r = dot_r - 1
+            elif pygame.MOUSEBUTTONDOWN and event.button == 1 and plus_btn:
+                dot_r = dot_r + 1
+
             # add dots
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_mode == True and pygame.Rect(x, y, new_size[0], new_size[1]).collidepoint(event.pos):
                 mx, my = event.pos
+
+            # change dot size
+
 
             # screen size to image size
                 ox = (mx - x) / scale
@@ -216,6 +226,17 @@ def main():
         pygame.draw.rect(screen, btn_color, edit_btn)
         btn_text = font.render("Edit", True, (255, 255, 255))
         screen.blit(btn_text, (edit_btn.x + 8, edit_btn.y + 4))
+        
+        # Draw -/+button
+        pygame.draw.rect(screen, (80, 80, 80), minus_btn)
+        minus_text = font.render("-", True, (255, 255, 255))
+        screen.blit(minus_text, (minus_btn.x + 10, minus_btn.y + 4))
+        pygame.draw.rect(screen, (80, 80, 80), plus_btn)
+        plus_text = font.render("+", True, (255, 255, 255))
+        screen.blit(minus_text, (plus_btn.x + 10, plus_btn.y + 4))
+
+        #Print current dot size
+        font.render(str(dot_r), ((plus_btn.y - minus_btn.y)//2, 13))
 
         # 寫入現在的frame
         current_frame = f"{current + 1} / {len(frames)}"
