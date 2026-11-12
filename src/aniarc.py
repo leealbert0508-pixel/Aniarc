@@ -134,7 +134,7 @@ def main():
                     playing = not playing
                 elif event.key == pygame.K_ESCAPE:
                     running = False
-                elif event.key == pygame.K_z and event.mod & pygame.KMOD_CTRL:
+                elif event.key == pygame.K_z and event.mod & pygame.KMOD_CTRL and history:
                     action = history.pop()
                     if action[0] == 'add':
                         dots[action[1]].pop()
