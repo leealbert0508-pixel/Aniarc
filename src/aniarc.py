@@ -70,6 +70,12 @@ def draw_button(screen, font, rect, label, active=False):
     text_rect = text.get_rect(center=rect.center)
     screen.blit(text, text_rect)
 
+def draw_trail(screen, dots, frames_count, x, y, scale):
+    pts = []
+    for f in range(frames_count):
+        frames_dots = dots.get(f, [])
+        if frames_dots:
+            pts.append(frames_dots[0].to_screen(x, y, scale))
 
 def main():
     
@@ -154,11 +160,11 @@ def main():
     # History
     history = []
 
-    # Game Loop
+# Game Loop
     running = True
     while running:
 
-        # event loop
+    # event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -225,7 +231,6 @@ def main():
     # game logic
         if playing:
             current = (current + 1) % len(frames)
-        #print(current)
 
         # 獲取 Resize img (scaled = resized img)
         scaled = pygame.transform.smoothscale(frames[current], new_size)
@@ -235,6 +240,10 @@ def main():
         
         # 將圖片寫入視窗
         screen.blit(scaled, (x, y))
+
+        # Draw Trail
+        if trail_mode:
+                        draw_trail(screen, dots, len(frames), x, y, scale)
 
         for d in dots.get(current, []):
             d.draw(screen, x, y, scale, dot_r)
@@ -248,7 +257,7 @@ def main():
         draw_button(screen, font, minus_btn, "-")
         draw_button(screen, font, plus_btn, "+")
 
-        #Print current dot size
+        # Show current dot size
         current_dots = font.render(f"{dot_r:02d}", True, (255, 255, 255))
         screen.blit(current_dots, (((plus_btn.x + minus_btn.x)//2) + 4, 15))
         
