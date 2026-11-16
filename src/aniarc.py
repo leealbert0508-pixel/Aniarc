@@ -113,6 +113,11 @@ def main():
     # 繪製 botton of edit mode
     edit_btn = pygame.Rect(8, 9, 70, 32)
 
+    #Trail Mode
+    trail_mode = False
+    #trail mode button
+    trail_btn = pygame.Rect(215, 9, 80, 32)
+
     #繪製調整dot大小的條
     minus_btn = pygame.Rect(90, 9, 32, 32)
     plus_btn = pygame.Rect(170, 9, 32, 32)
@@ -163,8 +168,13 @@ def main():
                     elif action[0] == "del":
                         dots[action[1]].insert(action[2], action[3])
 
+            # Edit mode
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_btn.collidepoint(event.pos):
                 edit_mode = not edit_mode
+
+            # Trail Mode
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and trail_btn.collidepoint(event.pos):
+                trail_mode = not trail_mode
 
             #change dot size
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and minus_btn.collidepoint(event.pos):
@@ -177,19 +187,14 @@ def main():
                     dot_r = dot_r + 1
                 else:
                     pass
+            
             # add dots
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_mode == True and pygame.Rect(x, y, new_size[0], new_size[1]).collidepoint(event.pos):
                 mx, my = event.pos
-
-            # change dot size
-
-
             # screen size to image size
                 ox = (mx - x) / scale
                 oy = (my - y) / scale
-
                 dots.setdefault(current, []).append(Dot(ox, oy))
-
                 # stored dots history
                 history.append(('add', current))
                 
@@ -225,13 +230,24 @@ def main():
 
         # 畫工具列
         pygame.draw.rect(screen, (45, 45, 45), (0, 0, win_w, tool_bar_h))
+        # change Edit mode color
         if edit_mode == True:
-            btn_color = (60, 120, 220)
+            edit_btn_color = (60, 120, 220)
         else:
-            btn_color = (80, 80, 80)
-        pygame.draw.rect(screen, btn_color, edit_btn)
-        btn_text = font.render("Edit", True, (255, 255, 255))
-        screen.blit(btn_text, (edit_btn.x + 8, edit_btn.y + 4))
+            edit_btn_color = (80, 80, 80)
+        pygame.draw.rect(screen, edit_btn_color, edit_btn)
+        edit_btn_text = font.render("Edit", True, (255, 255, 255))
+        screen.blit(edit_btn_text, (edit_btn.x + 8, edit_btn.y + 4))
+
+        #change trail mode button
+        if trail_mode == True:
+            trail_btn_color = (60, 120, 220)
+        else:
+            trail_btn_color = (80, 80, 80)
+        pygame.draw.rect(screen, trail_btn_color, trail_btn)
+        trail_btn_text = font.render("Trail", True, (255, 255, 255))
+        screen.blit(trail_btn_text, (trail_btn.x + 8, trail_btn.y + 4))
+
         
         # Draw -/+button
         pygame.draw.rect(screen, (80, 80, 80), minus_btn)
