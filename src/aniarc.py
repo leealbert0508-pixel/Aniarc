@@ -60,6 +60,17 @@ def get_max_screen_size():
     height = int(screen_h*0.7)
     return (width, height)
 
+def draw_button(screen, font, rect, label, active=False):
+    if active:
+        color = (60, 120, 220)  
+    else:
+        color = (80, 80, 80)
+    pygame.draw.rect(screen, color, rect)
+    text = font.render(label, True, (255, 255, 255))
+    text_rect = text.get_rect(center=rect.center)
+    screen.blit(text, text_rect)
+
+
 def main():
     
     #path = folder for seq/file path for gif or mp4
@@ -198,7 +209,7 @@ def main():
                 # stored dots history
                 history.append(('add', current))
                 
-
+            #remove dot
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3 and edit_mode:
             # button 3 == right mouse
                 mx, my = event.pos
@@ -230,33 +241,12 @@ def main():
 
         # 畫工具列
         pygame.draw.rect(screen, (45, 45, 45), (0, 0, win_w, tool_bar_h))
-        # change Edit mode color
-        if edit_mode == True:
-            edit_btn_color = (60, 120, 220)
-        else:
-            edit_btn_color = (80, 80, 80)
-        pygame.draw.rect(screen, edit_btn_color, edit_btn)
-        edit_btn_text = font.render("Edit", True, (255, 255, 255))
-        screen.blit(edit_btn_text, (edit_btn.x + 8, edit_btn.y + 4))
-
-        #change trail mode button
-        if trail_mode == True:
-            trail_btn_color = (60, 120, 220)
-        else:
-            trail_btn_color = (80, 80, 80)
-        pygame.draw.rect(screen, trail_btn_color, trail_btn)
-        trail_btn_text = font.render("Trail", True, (255, 255, 255))
-        screen.blit(trail_btn_text, (trail_btn.x + 8, trail_btn.y + 4))
-
         
-        # Draw -/+button
-        pygame.draw.rect(screen, (80, 80, 80), minus_btn)
-        minus_text = font.render("-", True, (255, 255, 255))
-        screen.blit(minus_text, (minus_btn.x + 10, minus_btn.y + 4))
-        
-        pygame.draw.rect(screen, (80, 80, 80), plus_btn)
-        plus_text = font.render("+", True, (255, 255, 255))
-        screen.blit(plus_text, (plus_btn.x + 10, plus_btn.y + 4))
+        # Draw Button
+        draw_button(screen, font, edit_btn, "Edit", edit_mode)
+        draw_button(screen, font, trail_btn, "Trail", trail_mode)
+        draw_button(screen, font, minus_btn, "-")
+        draw_button(screen, font, plus_btn, "+")
 
         #Print current dot size
         current_dots = font.render(f"{dot_r:02d}", True, (255, 255, 255))
