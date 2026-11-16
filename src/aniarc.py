@@ -76,6 +76,8 @@ def draw_trail(screen, dots, frames_count, x, y, scale):
         frames_dots = dots.get(f, [])
         if frames_dots:
             pts.append(frames_dots[0].to_screen(x, y, scale))
+    if len(pts) >= 2:
+        pygame.draw.lines(screen, (255, 200, 0), False, pts, 2)
 
 def main():
     
@@ -243,7 +245,7 @@ def main():
 
         # Draw Trail
         if trail_mode:
-                        draw_trail(screen, dots, len(frames), x, y, scale)
+            draw_trail(screen, dots, len(frames), x, y, scale)
 
         for d in dots.get(current, []):
             d.draw(screen, x, y, scale, dot_r)
