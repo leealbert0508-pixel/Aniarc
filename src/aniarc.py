@@ -22,13 +22,14 @@ class Dot:
         # Get original position
         self.ox = ox
         self.oy = oy
+        self.color = (255, 0, 0)
 
     def to_screen(self, x, y, scale):
          return x + self.ox * scale, y + self.oy * scale
     
     def draw(self, screen, x, y, scale, r):
         sx, sy = self.to_screen(x, y, scale)
-        pygame.draw.circle(screen, (255, 0, 0), (int(sx), int(sy)), r)
+        pygame.draw.circle(screen, self.color, (int(sx), int(sy)), r)
     
     def hit(self, mx, my, x, y, scale, r):
         sx, sy = self.to_screen(x, y, scale)
@@ -69,6 +70,17 @@ def draw_button(screen, font, rect, label, active=False):
     text = font.render(label, True, (255, 255, 255))
     text_rect = text.get_rect(center=rect.center)
     screen.blit(text, text_rect)
+
+def held_dots(dots, current):
+    # if current frame not dots, find previous frames dots
+    # star from current frame, go backward.
+    for f in range(current, -1, -1):
+        # if find dots, return the dot
+        if dots.get(f):
+            return dots[f]
+    # if there are no dots, returen empty list
+    return[]
+    
 
 def draw_trail(screen, dots, frames_count, x, y, scale):
     pts = []
@@ -154,6 +166,7 @@ def main():
     current = 0
     # 設置自動撥放(默認關閉)
     playing = False
+    space_held = False
 
     # stored the dot
     dots = {}
@@ -175,8 +188,9 @@ def main():
                     current = (current + 1)%len(frames)
                 elif event.key == pygame.K_LEFT:
                     current = (current - 1)%len(frames)
-                elif event.key == pygame.K_SPACE:
+                elif event.key == pygame.K_SPACE and not space_held:
                     # change the result(true and false)
+                    space_held = True
                     playing = not playing
                 elif event.key == pygame.K_ESCAPE:
                     running = False
@@ -186,6 +200,8 @@ def main():
                         dots[action[1]].pop()
                     elif action[0] == "del":
                         dots[action[1]].insert(action[2], action[3])
+            elif event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
+                space_held = False
 
             # Edit mode
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_btn.collidepoint(event.pos):
@@ -247,7 +263,7 @@ def main():
         if trail_mode:
             draw_trail(screen, dots, len(frames), x, y, scale)
 
-        for d in dots.get(current, []):
+        for d in held_dots(dots, current):
             d.draw(screen, x, y, scale, dot_r)
 
         # 畫工具列
