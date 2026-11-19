@@ -18,11 +18,11 @@ def input_file():
     return file_path
 
 class Dot:
-    def __init__(self, ox, oy):
+    def __init__(self, ox, oy, color = (255, 0, 0)):
         # Get original position
         self.ox = ox
         self.oy = oy
-        self.color = (255, 0, 0)
+        self.color = color
 
     def to_screen(self, x, y, scale):
          return x + self.ox * scale, y + self.oy * scale
@@ -175,6 +175,9 @@ def main():
     # History
     history = []
 
+    # Current Dot Color
+    current_color = (255, 0, 0)
+
 # Game Loop
     running = True
     while running:
@@ -222,14 +225,18 @@ def main():
                     dot_r = dot_r + 1
                 else:
                     pass
-            
+
+            # change color
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_mode == True and color_btn.collidepoint(event.pos):
+                color_change()
+
             # add dots
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_mode == True and pygame.Rect(x, y, new_size[0], new_size[1]).collidepoint(event.pos):
                 mx, my = event.pos
             # screen size to image size
                 ox = (mx - x) / scale
                 oy = (my - y) / scale
-                dots.setdefault(current, []).append(Dot(ox, oy))
+                dots.setdefault(current, []).append(Dot(ox, oy, current_color))
                 # stored dots history
                 history.append(('add', current))
                 
