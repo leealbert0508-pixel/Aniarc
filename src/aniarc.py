@@ -27,7 +27,7 @@ def input_file():
     return file_path
 
 class Dot:
-    def __init__(self, ox, oy, color = (255, 0, 0)):
+    def __init__(self, ox, oy, color = (255, 60, 60)):
         # Get original position
         self.ox = ox
         self.oy = oy
@@ -102,7 +102,7 @@ def draw_trail(screen, dots, frames_count, x, y, scale):
 
 def color_change(current_color):
     
-    #創建切換顏色按鈕
+    
     #創建點擊按鈕後的選單
 
     #當用戶點擊顏色按鈕時展開選單
@@ -144,7 +144,10 @@ def main():
 
     #圖片大小
     img_w, img_h = frames[0].get_size()
-    
+
+
+### 工具列與按鈕
+
     #工具列
     tool_bar_h = 50
 
@@ -168,9 +171,16 @@ def main():
     #trail mode button
     trail_btn = pygame.Rect(215, 9, 80, 32)
 
-    #繪製調整dot大小的條
+    # Color changing mode
+    menu_open = False
+
+    #繪製調整dot大小的按鈕
     minus_btn = pygame.Rect(90, 9, 32, 32)
     plus_btn = pygame.Rect(170, 9, 32, 32)
+
+    # 顏色按鈕
+    color_btn = pygame.Rect(305, 9, 32, 32)
+    color_menu_btn = [pygame.Rect(309, 49 + i * 28, 24, 24) for i in range(len(COLORS))]
     
     # 創建視窗(按照機算出的視窗大小)
     screen = pygame.display.set_mode((win_w, win_h))
@@ -195,13 +205,14 @@ def main():
     history = []
 
     # Current Dot Color
-    current_color = (255, 0, 0)
+    current_color = (255, 60, 60)
 
 # Game Loop
     running = True
     while running:
 
-    # event loop
+# event loop
+    # 偵測用戶每幀內的動作
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -246,8 +257,13 @@ def main():
                     pass
 
             # change color
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_mode == True and color_btn.collidepoint(event.pos):
-                current_color = color_change(current_color)
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and color_btn.collidepoint(event.pos):
+                menu_open = not menu_open
+                print(menu_open)
+
+            # close menu when clicking outside it
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and menu_open and not color_btn.collidepoint(event.pos) and not any(rect.collidepoint(event.pos) for rect in color_menu_btn):
+                menu_open = False
 
             # add dots
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_mode == True and pygame.Rect(x, y, new_size[0], new_size[1]).collidepoint(event.pos):
@@ -272,7 +288,8 @@ def main():
                         break
             
 
-    # game logic
+# game logic
+    # 接收動作後與數據之後更新畫面
         if playing:
             current = (current + 1) % len(frames)
 
@@ -295,26 +312,34 @@ def main():
         # 畫工具列
         pygame.draw.rect(screen, (45, 45, 45), (0, 0, win_w, tool_bar_h))
         
-        # Draw Button
+    # Draw Button
         draw_button(screen, font, edit_btn, "Edit", edit_mode)
         draw_button(screen, font, trail_btn, "Trail", trail_mode)
         draw_button(screen, font, minus_btn, "-")
         draw_button(screen, font, plus_btn, "+")
 
-        # Show current dot size
+        # Draw Color Button
+        if menu_open:
+            pygame.draw.rect(screen, (80, 80, 80), (305, 45, 32, len(COLORS) * 28 + 4))
+            for i, rect in enumerate(color_menu_btn):
+                pygame.draw.rect(screen, COLORS[i], rect)
+        pygame.draw.rect(screen, current_color, color_btn)
+        pygame.draw.rect(screen, (80, 80, 80), color_btn, 2)
+
+    # Show current dot size
         current_dots = font.render(f"{dot_r:02d}", True, (255, 255, 255))
         screen.blit(current_dots, (((plus_btn.x + minus_btn.x)//2) + 4, 15))
         
-        # 寫入現在的frame
+    # 寫入現在的frame
         width = len(str(len(frames)))
         current_frame = f"{current + 1:0{width}d} / {len(frames)}"
         text = font.render(current_frame, True, (255, 255, 255))
         screen.blit(text, (15, 60))
         
-        # 反轉/顯示圖片
+    # 反轉/顯示圖片
         pygame.display.flip()
 
-        # 限制每一幀應為1/24秒，即24pfs
+    # 限制每一幀應為1/24秒，即24pfs
         clock.tick(24)
 
     pygame.quit()
