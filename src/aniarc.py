@@ -5,6 +5,15 @@ from moviepy.editor import VideoFileClip
 import tkinter as tk
 from tkinter import filedialog
 
+#color list
+COLORS = [
+    (255, 60, 60),
+    (60, 150, 255),
+    (60, 220, 100),
+    (255, 220, 0),
+    (200, 80, 255),
+]
+
 def input_file():
     # create file input window.
     input_window = tk.Tk()
@@ -90,6 +99,16 @@ def draw_trail(screen, dots, frames_count, x, y, scale):
             pts.append(frames_dots[0].to_screen(x, y, scale))
     if len(pts) >= 2:
         pygame.draw.lines(screen, (255, 200, 0), False, pts, 2)
+
+def color_change(current_color):
+    
+    #創建切換顏色按鈕
+    #創建點擊按鈕後的選單
+
+    #當用戶點擊顏色按鈕時展開選單
+    #當用戶點擊選單上的顏色後切換顏色
+    
+    return current_color
 
 def main():
     
@@ -228,7 +247,7 @@ def main():
 
             # change color
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_mode == True and color_btn.collidepoint(event.pos):
-                color_change()
+                current_color = color_change(current_color)
 
             # add dots
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and edit_mode == True and pygame.Rect(x, y, new_size[0], new_size[1]).collidepoint(event.pos):
